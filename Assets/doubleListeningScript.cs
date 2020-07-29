@@ -23,10 +23,10 @@ public class doubleListeningScript : MonoBehaviour
 	public AudioSource sound1;
 	public AudioSource sound2;
 
+	//Module resources:
 	public AudioClip[] sounds;
 	public String[] soundNames = new String[] {"Arcade","Ballpoint Pen Writing","Beach","Book Page Turning","Car Engine","Casino","Censorship Bleep","Chainsaw","Compressed Air","Cow","Dialup Internet","Door Closing","Extractor Fan","Firework Exploding","Glass Shattering","Helicopter","Marimba","Medieval Weapons","Oboe","Phone Ringing","Police Radio Scanner",
 	"Rattling Iron Chain","Reloading Glock 19","Saxophone","Servo Motor","Sewing Machine","Soccer Match","Squeaky Toy","Supermarket","Table Tennis","Tawny Owl","Taxi Dispatch","Tearing Fabric","Throat Singing","Thrush Nightingale","Tibetan Nuns","Train Station","Tuba","Vacuum Cleaner","Waterfall","Zipper"};
-	private bool moduleSolved = false;
 	private Dictionary<String, String> listeningCodes = new Dictionary<String, String>()
 	{
 		{"Taxi Dispatch","&&&**"},{"Cow","&$#$&"},{"Extractor Fan","$#$*&"},{"Train Station","#$$**"},{"Arcade","$#$#*"},{"Casino","**$*#"},{"Supermarket","#$$&*"},{"Soccer Match","##*$*"},{"Tawny Owl","$#*$*"},{"Sewing Machine","#&&*#"},{"Thrush Nightingale","**#**"},{"Car Engine","&#**&"},{"Reloading Glock 19","$&**#"},{"Oboe","&#$$#"},
@@ -34,6 +34,9 @@ public class doubleListeningScript : MonoBehaviour
 		{"Compressed Air","$$*$*"},{"Servo Motor","$&#$$"},{"Waterfall","&**$$"},{"Tearing Fabric","$&&*&"},{"Zipper","&$&##"},{"Vacuum Cleaner","#&$*&"},{"Ballpoint Pen Writing","$*$**"},{"Rattling Iron Chain","*#$&&"},{"Book Page Turning","###&$"},{"Table Tennis","*$$&$"},{"Squeaky Toy","$*&##"},{"Helicopter","#&$&&"},{"Firework Exploding","$&$$*"},{"Glass Shattering","*$*$*"}
 	};
 
+	//Key module variables:
+	private bool moduleSolved = false;
+	String solution = null;
 	bool soundsPlaying = false;
 	int[] soundPositions;
 
@@ -41,13 +44,16 @@ public class doubleListeningScript : MonoBehaviour
 	static int moduleIdCounter = 1;
 	int moduleId;
 
-	//Awaken module.
+	//Awaken module - assign event handlers etc.
 	void Awake()
 	{
 		moduleId = moduleIdCounter++;
 
 		KMSelectable pb = playButton;
 		pb.OnInteract += delegate(){PressPlay(); return false;};
+
+		KMSelectable submit = submitButton;
+		submit.OnInteract += delegate(){PressSubmit(); return false;};
 
 		for(int i = 0; i < upArrows.Length; i++)
 		{
@@ -70,7 +76,7 @@ public class doubleListeningScript : MonoBehaviour
 		String listeningCode2 = listeningCodes[soundNames[soundPositions[1]]];
 		Debug.LogFormat("[Double Listening #{0}] The listening code for \"{1}\" is {2}", moduleId, soundNames[soundPositions[0]], listeningCode1);
 		Debug.LogFormat("[Double Listening #{0}] The listening code for \"{1}\" is {2}", moduleId, soundNames[soundPositions[1]], listeningCode2);
-		String solution = CalculateSolution(listeningCode1,listeningCode2);
+		solution = CalculateSolution(listeningCode1,listeningCode2);
 		Debug.LogFormat("[Double Listening #{0}] Solution: {1}.", moduleId, solution);
 	}
 
@@ -178,6 +184,34 @@ public class doubleListeningScript : MonoBehaviour
 		bitDisplays[arrowNum].GetComponentInChildren<TextMesh>().text = "0\n";
 		downArrows[arrowNum].AddInteractionPunch(0.5f);
 		Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+	}
+
+	void PressSubmit()
+	{
+		if(moduleSolved)
+			return;
+		submitButton.AddInteractionPunch(0.5f);
+		String answerSubmitted = "";
+		foreach(Renderer bit in bitDisplays)
+		{
+			answerSubmitted += (bit.GetComponentInChildren<TextMesh>().text)[0];
+		}
+
+		Debug.LogFormat("[Double Listening #{0}] You submitted {1}.", moduleId, answerSubmitted);
+
+		if(answerSubmitted.Equals(solution))
+		{
+			Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
+			Debug.LogFormat("[Double Listening #{0}] Module solved.", moduleId);
+			GetComponent<KMBombModule>().HandlePass();
+			moduleSolved = true;
+		}
+		else
+		{
+			Debug.LogFormat("[Double Listening #{0}] That was incorrect. Strike!", moduleId);
+			GetComponent<KMBombModule>().HandleStrike();
+			Start();
+		}
 	}
 
 	//Play both sounds and run a cooldown of 5 seconds.
