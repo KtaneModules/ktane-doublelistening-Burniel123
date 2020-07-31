@@ -214,7 +214,7 @@ public class doubleListeningScript : MonoBehaviour
 		}
 	}
 
-	//Play both sounds and run a cooldown of 5 seconds.
+	//Play both sounds and run a cooldown of 3 seconds.
 	IEnumerator PlaySounds(int[] positions)
 	{
 		soundsPlaying = true;
@@ -222,7 +222,7 @@ public class doubleListeningScript : MonoBehaviour
 		sound2.clip = sounds[positions[1]];
 		sound1.Play();
 		sound2.Play();
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(3f);
 		soundsPlaying = false;
 	}
 }
