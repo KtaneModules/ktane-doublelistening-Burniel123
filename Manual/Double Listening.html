@@ -24,7 +24,7 @@
 
                 <p>The module features a play button, a black, square submit button, and five single-bit displays along the bottom. Pressing 
 				the play button will play two sounds from the classic Listening module at the same time. The play button has a cooldown 
-				period of 5 seconds. Use the original Listening manual [link] to obtain two five-character codes, each corresponding to one of the sounds.</p>
+				period of 3 seconds. Use the <a href="https://ktane.timwi.de/HTML/Listening.html">original Listening manual</a> to obtain two five-character codes, each corresponding to one of the sounds.</p>
 				
 				<p>Using the first row from Table A which applies, convert each character in each obtained code to a binary digit. 
 				Perform a bitwise XOR<sup>*</sup> operation on the two five-digit binary codes and submit the result using the 
@@ -43,29 +43,30 @@
 						<th>*</th>
 					</tr>
                     <tr>
-                        <th>If the bomb has at least 3 batteries and at least one of the sounds was Beach or Waterfall</th>
+                        <th style="text-align:left">If the bomb has at least 3 batteries and at least one of the sounds was Beach or Waterfall</th>
                         <td>0</td><td>0</td><td>1</td><td>1</td>
                     </tr>
                     <tr>
-                        <th>Otherwise, if the bomb has an empty port plate</th>
+                        <th style="text-align:left;width:60%">Otherwise, if the bomb has an empty port plate</th>
                         <td>0</td><td>1</td><td>0</td><td>1</td>
                     </tr>
                     <tr>
-                        <th>Otherwise, if the last digit of the bomb's serial number is odd</th>
+                        <th style="text-align:left">Otherwise, if the last digit of the bomb's serial number is odd</th>
                         <td>1</td><td>0</td><td>1</td><td>0</td>
                     </tr>
                     <tr>
-                        <th>Otherwise</th>
+                        <th style="text-align:left">Otherwise</th>
                         <td>1</td><td>1</td><td>0</td><td>0</td>
                     </tr>
                 </table>
-				<p></P>
+				<p></p>
+				<p>NB: Some sounds have had their volume adjusted to prevent them from downing others out.</p>
 				<p><sup>*</sup>To perform a bitwise XOR operation, consider the digits of the two binary codes one position at a time. 
 				The result for each position is a 1 if the digits in the two codes at that position are both different. Otherwise, the 
 				result for that position is a 0.</p>
 				
-            <div class="page-footer relative-footer">Page 1 of 1</div>
         </div>
+		<div class="page-footer relative-footer">Page 1 of 1</div>
     </div>
 </body>
 </html>
