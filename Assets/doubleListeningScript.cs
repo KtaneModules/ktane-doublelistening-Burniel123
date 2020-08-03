@@ -225,4 +225,52 @@ public class doubleListeningScript : MonoBehaviour
 		yield return new WaitForSeconds(3f);
 		soundsPlaying = false;
 	}
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Play the sounds with “!{0} play”. Set the bit displays with “!{0} set 10101”. Submit with “!{0} submit”. Set and submit with “!{0} set 10101 submit.”";
+#pragma warning restore 414
+
+	//Process command for Twitch Plays - IEnumerator method used due to length of sounds.
+	IEnumerator ProcessTwitchCommand(String command)
+	{
+		var play = Regex.Match(command,@"^(\s)*(play){1}(\s)*$", RegexOptions.IgnoreCase);
+		var set = Regex.Match(command,@"^\s*(submit|((set\s([0-1]){5})(\ssubmit)?))(\s)*$", RegexOptions.IgnoreCase);
+		
+		if(!(play.Success || set.Success))
+			yield break;
+		
+		if(play.Success)
+		{
+			yield return null;
+			playButton.OnInteract();
+		}
+		else if(command.ToLower().Contains("set"))
+		{
+			Debug.Log(set.Groups[3].Value.ToLowerInvariant().Trim().Substring(4));
+			String valuesEntered = set.Groups[3].Value.ToLowerInvariant().Trim().Substring(4);
+			for(int i = 0; i < valuesEntered.Length; i++)
+			{
+				Debug.Log(bitDisplays[i].GetComponentInChildren<TextMesh>().text);
+
+				if(valuesEntered[i] == '1' && bitDisplays[i].GetComponentInChildren<TextMesh>().text.Contains("0"))
+				{
+					yield return null;
+					upArrows[i].OnInteract();
+					yield return new WaitForSeconds(.05f);
+				}
+				else if(valuesEntered[i] == '0' && bitDisplays[i].GetComponentInChildren<TextMesh>().text.Contains("1"))
+				{
+					yield return null;
+					downArrows[i].OnInteract();
+					yield return new WaitForSeconds(.05f);
+				}
+			}
+		}
+
+		if(command.ToLower().Contains("submit"))
+		{
+			yield return null;
+			submitButton.OnInteract();
+		}
+	}
 }
