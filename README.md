@@ -5,6 +5,7 @@ A module for “Keep Talking and Nobody Explodes”. Designed and implemented by
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=2186725719
 
+Manual (HTML): https://ktane.timwi.de/HTML/Double%20Listening.html
 Manual (PDF): https://drive.google.com/file/d/12bDCNQBcYf3tlwMHSbKC1DiG1xpVNv0I/view?usp=sharing
 
 ---
