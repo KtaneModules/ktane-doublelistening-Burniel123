@@ -246,12 +246,9 @@ public class doubleListeningScript : MonoBehaviour
 		}
 		else if(command.ToLower().Contains("set"))
 		{
-			Debug.Log(set.Groups[3].Value.ToLowerInvariant().Trim().Substring(4));
 			String valuesEntered = set.Groups[3].Value.ToLowerInvariant().Trim().Substring(4);
 			for(int i = 0; i < valuesEntered.Length; i++)
 			{
-				Debug.Log(bitDisplays[i].GetComponentInChildren<TextMesh>().text);
-
 				if(valuesEntered[i] == '1' && bitDisplays[i].GetComponentInChildren<TextMesh>().text.Contains("0"))
 				{
 					yield return null;
@@ -272,5 +269,33 @@ public class doubleListeningScript : MonoBehaviour
 			yield return null;
 			submitButton.OnInteract();
 		}
+	}
+
+	//Calls a coroutine to autosolve the module when a TP admin does !<id> solve.
+	void TwitchHandleForcedSolve()
+	{
+		if(moduleSolved) return;
+		StartCoroutine(HandleForcedSolve());
+	}
+
+	IEnumerator HandleForcedSolve()
+	{
+		yield return null;
+		Debug.Log(solution);
+		for(int i = 0; i < solution.Length; i++)
+		{
+			if(solution[i] == '1')
+			{
+				upArrows[i].OnInteract();
+				yield return new WaitForSeconds(0.2f);
+			}
+			else
+			{
+				downArrows[i].OnInteract();
+				yield return new WaitForSeconds(0.2f);
+			}
+		}
+
+		submitButton.OnInteract();
 	}
 }
