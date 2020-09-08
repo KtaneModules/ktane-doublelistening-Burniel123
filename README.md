@@ -11,4 +11,6 @@ Manual (PDF): https://drive.google.com/file/d/12bDCNQBcYf3tlwMHSbKC1DiG1xpVNv0I/
 ---
 ## Version History
 
+2020-09-08 - 1.1: Rule seed support added.
+
 2020-08-03 - 1.0: Double Listening released! 

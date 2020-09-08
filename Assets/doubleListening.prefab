@@ -968,6 +968,7 @@ GameObject:
   - component: {fileID: 114047316683578060}
   - component: {fileID: 114137779347035646}
   - component: {fileID: 114485729725782112}
+  - component: {fileID: 114219093440230480}
   m_Layer: 0
   m_Name: doubleListening
   m_TagString: Untagged
@@ -4278,6 +4279,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/DiffuseTint
+--- !u!114 &114219093440230480
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1984073638609510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114236368056677028
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4526,6 +4539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Audio: {fileID: 114688909895979514}
   Bomb: {fileID: 114882220291382324}
+  RuleSeed: {fileID: 114219093440230480}
   upArrows:
   - {fileID: 114053556938970896}
   - {fileID: 114678598971064104}

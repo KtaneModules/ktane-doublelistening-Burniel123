@@ -14,7 +14,7 @@ MonoBehaviour:
   id: doubleListening
   title: Double Listening
   author: Burniel
-  description: 'Double Listening V1.0.1
+  description: 'Double Listening V1.1
 
     "I don''t know the difference, is that arcade or casino?" "Yes."
 
@@ -23,12 +23,12 @@ MonoBehaviour:
     - a module to test if you can listen to two of them at once!
 
 
-    Module created by Burniel. Twitch Plays support included.
+    Module created by Burniel. Twitch Plays and rule seed support included.
 
 
     Manual (HTML): https://ktane.timwi.de/HTML/Double%20Listening.html
 
     Manual (PDF): https://drive.google.com/file/d/12bDCNQBcYf3tlwMHSbKC1DiG1xpVNv0I/view?usp=sharing'
-  version: 1.0.1
+  version: 1.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 4102b88e547f426449b1cb528382b6d2, type: 3}

@@ -10,9 +10,10 @@ using KModkit;
 public class doubleListeningScript : MonoBehaviour 
 {
 
-	//Audio and bomb info from the ModKit:
+	//Audio, bomb, and rule seed info:
 	public KMAudio Audio;
 	public KMBombInfo Bomb;
+	public KMRuleSeedable RuleSeed;
 
 	//Module components:
 	public KMSelectable[] upArrows;
@@ -33,12 +34,17 @@ public class doubleListeningScript : MonoBehaviour
 		{"Saxophone","$&&**"},{"Tuba","#&$##"},{"Marimba","&*$*$"},{"Phone Ringing","&$$&*"},{"Tibetan Nuns","#&&&&"},{"Throat Singing","**$$$"},{"Beach","*&*&&"},{"Dialup Internet","*#&*&"},{"Police Radio Scanner","**###"},{"Censorship Bleep","&&$&*"},{"Medieval Weapons","&$**&"},{"Door Closing","#$#&$"},{"Chainsaw","&#&&#"},
 		{"Compressed Air","$$*$*"},{"Servo Motor","$&#$$"},{"Waterfall","&**$$"},{"Tearing Fabric","$&&*&"},{"Zipper","&$&##"},{"Vacuum Cleaner","#&$*&"},{"Ballpoint Pen Writing","$*$**"},{"Rattling Iron Chain","*#$&&"},{"Book Page Turning","###&$"},{"Table Tennis","*$$&$"},{"Squeaky Toy","$*&##"},{"Helicopter","#&$&&"},{"Firework Exploding","$&$$*"},{"Glass Shattering","*$*$*"}
 	};
+	//For rule seed:
+	String[] IndicatorNames = {"BOB", "CAR", "CLR", "FRK", "FRQ", "IND", "MSA", "NSA", "SIG", "SND", "TRN"};
+	Port[] Ports = {Port.Parallel, Port.Serial, Port.PS2, Port.RJ45, Port.DVI, Port.StereoRCA};
+	String[] PortNames = {"Parallel", "Serial", "PS/2", "RJ-45", "DVI-D", "Stereo RCA"};
 
 	//Key module variables:
 	private bool moduleSolved = false;
 	String solution = null;
 	bool soundsPlaying = false;
 	int[] soundPositions;
+	Condition[] conditions;
 
 	//Logging variables:
 	static int moduleIdCounter = 1;
@@ -70,6 +76,46 @@ public class doubleListeningScript : MonoBehaviour
 	//Initialize module.
 	void Start() 
 	{
+		var rnd = RuleSeed.GetRNG();
+
+		if(rnd.Seed == 1)
+			conditions = null;
+		else
+		{
+			conditions = new Condition[3];
+			int[] conditionIndicesUsed = new int[3];
+			for(int i = 0; i < 3; i++)
+			{
+				int condIndex = -1;
+				while(condIndex == -1 || conditionIndicesUsed.Contains(condIndex))
+					condIndex = rnd.Next(7);
+			
+				var condType = (ConditionType)condIndex;
+				conditionIndicesUsed[i] = condIndex;
+				int parameter;
+
+				if(condIndex < 2)
+					parameter = rnd.Next(11);
+				else
+					parameter = rnd.Next(6);
+
+				if(i == 0)
+				{
+					int[] sounds = new int[2];
+					sounds[0] = rnd.Next(41);
+					sounds[1] = -1;
+					while(sounds[1] == -1 || sounds[1] == sounds[0])
+						sounds[1] = rnd.Next(41);
+					conditions[i] = new Condition{Type = condType, ConditionParam = parameter, Sounds = sounds};
+				}
+				else
+				{
+					conditions[i] = new Condition{Type = condType, ConditionParam = parameter};
+				}
+			}
+
+		}
+
 		soundPositions = Enumerable.Range(0, 41).ToList().Shuffle().Take(2).ToArray();
 		Debug.LogFormat("[Double Listening #{0}] The chosen sounds are \"{1}\" and \"{2}\".", moduleId, soundNames[soundPositions[0]], soundNames[soundPositions[1]]);
 		String listeningCode1 = listeningCodes[soundNames[soundPositions[0]]];
@@ -82,22 +128,18 @@ public class doubleListeningScript : MonoBehaviour
 
 	//Given two listening codes, calculates a String of binary to input to solve the module.
 	String CalculateSolution(String symbols1, String symbols2)
-	{
+	{	
 		int rowNum = DetermineTableRowNum();
 		int[] mappings = new int[4];
 		switch(rowNum)
 		{
 			case 0 :
-			Debug.LogFormat("[Double Listening #{0}] Using table row 1: \"If the bomb has at least 3 batteries and at least one of the sounds was Beach or Waterfall\".", moduleId);
 			mappings = new int[] {0,0,1,1};break;
 			case 1 :
-			Debug.LogFormat("[Double Listening #{0}] Using table row 2: \"Otherwise, if the bomb has an empty port plate\".", moduleId);
 			mappings = new int[] {0,1,0,1};break;
 			case 2 :
-			Debug.LogFormat("[Double Listening #{0}] Using table row 3: \"Otherwise, if the last digit of the bomb's serial number is odd\".", moduleId);
 			mappings = new int[] {1,0,1,0};break;
 			case 3 :
-			Debug.LogFormat("[Double Listening #{0}] Using table row 4: \"Otherwise\".", moduleId);
 			mappings = new int[] {1,1,0,0};break;
 		}
 		
@@ -114,16 +156,106 @@ public class doubleListeningScript : MonoBehaviour
 	{
 		String listeningName1 = soundNames[soundPositions[0]];
 		String listeningName2 = soundNames[soundPositions[1]];
-		if(Bomb.GetBatteryCount() >= 3 && (listeningName1.Equals("Beach") || listeningName1.Equals("Waterfall") || listeningName2.Equals("Beach") || listeningName2.Equals("Waterfall")))
-			return 0;
-		foreach(var plate in Bomb.GetPortPlates())
+		if(conditions == null)
 		{
-			if(plate.Count() == 0)
-				return 1;
+			if(Bomb.GetBatteryCount() >= 3 && (listeningName1.Equals("Beach") || listeningName1.Equals("Waterfall") || listeningName2.Equals("Beach") || listeningName2.Equals("Waterfall")))
+			{
+				Debug.LogFormat("[Double Listening #{0}] Using table row 1: \"If the bomb has at least 3 batteries and at least one of the sounds was Beach or Waterfall\".", moduleId);
+				return 0;
+			}	
+			foreach(var plate in Bomb.GetPortPlates())
+			{
+				if(plate.Count() == 0)
+				{
+					Debug.LogFormat("[Double Listening #{0}] Using table row 2: \"Otherwise, if the bomb has an empty port plate\".", moduleId);
+					return 1;
+				}
+			}
+			if(int.Parse(Bomb.GetSerialNumber().Substring(5,1)) % 2 == 1)
+			{
+				Debug.LogFormat("[Double Listening #{0}] Using table row 3: \"Otherwise, if the last digit of the bomb's serial number is odd\".", moduleId);
+				return 2;
+			}
+			Debug.LogFormat("[Double Listening #{0}] Using table row 4: \"Otherwise\".", moduleId);
+			return 3;
 		}
-		if(int.Parse(Bomb.GetSerialNumber().Substring(5,1)) % 2 == 1)
-			return 2;
+		for(int i = 0; i < 3; i++)
+		{
+			if(i == 0 && !conditions[i].Sounds.Contains(soundPositions[0]) && !conditions[i].Sounds.Contains(soundPositions[1]))
+				continue;
+
+			switch(conditions[i].Type)
+			{
+				case ConditionType.LitIndicator:
+					if(Bomb.IsIndicatorOn(IndicatorNames[conditions[i].ConditionParam]))
+					{
+						Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the bomb has a lit {3} indicator{4}\".", 
+						moduleId, i+1, (i == 0) ? "I" : "Otherwise, i", IndicatorNames[conditions[i].ConditionParam], 
+						(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+						return i;
+					}
+					break;
+				case ConditionType.UnlitIndicator:
+					if(Bomb.IsIndicatorOff(IndicatorNames[conditions[i].ConditionParam]))
+					{
+						Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the bomb has an unlit {3} indicator{4}\".", 
+						moduleId, i+1, (i == 0) ? "I" : "Otherwise, i", IndicatorNames[conditions[i].ConditionParam],
+						(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+						return i;
+					}
+					break;
+				case ConditionType.Port:
+					if(Bomb.GetPortCount(Ports[conditions[i].ConditionParam]) > 0)
+					{
+						Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the bomb has a {3} port{4}\".", 
+						moduleId, i+1, (i == 0) ? "I" : "Otherwise, i", PortNames[conditions[i].ConditionParam],
+						(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+						return i;
+					}
+					break;
+				case ConditionType.EmptyPlate:
+					foreach(var plate in Bomb.GetPortPlates())
+						if(plate.Count() == 0)
+						{
+							Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the bomb has an empty port plate{3}\".", 
+							moduleId, i+1, (i == 0) ? "I" : "Otherwise, i",
+							(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+							return i;
+						}
+					break;
+				case ConditionType.BatteryCount:
+					if(Bomb.GetBatteryCount() >= (conditions[i].ConditionParam % 3) + 2)
+					{
+						Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the bomb has at least {3} batteries{4}\".", 
+						moduleId, i+1, (i == 0) ? "I" : "Otherwise, i", (conditions[i].ConditionParam % 3) + 2,
+						(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+						return i;
+					}
+					break;
+				case ConditionType.SerialParity:
+					if((Bomb.GetSerialNumberNumbers().Last() % 2) == (conditions[i].ConditionParam % 2))
+					{
+						Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the last digit of the bomb's serial number is {3}{4}\".", 
+						moduleId, i+1, (i == 0) ? "I" : "Otherwise, i", (conditions[i].ConditionParam % 2 == 0) ? "even" : "odd",
+						(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+						return i;
+					}
+					break;
+				case ConditionType.SerialVowel:
+					bool containsVowel = Bomb.GetSerialNumberLetters().Any(x => x == 'A' || x == 'E' || x == 'I' || x == 'O' || x == 'U');
+					if((containsVowel && conditions[i].ConditionParam % 2 == 1) || (!containsVowel && conditions[i].ConditionParam % 2 == 0))
+					{
+						Debug.LogFormat("[Double Listening #{0}] Using table row {1}: \"{2}f the bomb's serial number {3} a vowel{4}\".", 
+						moduleId, i+1, (i == 0) ? "I" : "Otherwise, i", (conditions[i].ConditionParam % 2 == 0) ? "does not contain" : "contains",
+						(i==0) ? (" and at least one of the sounds was " + listeningName1 + " or " + listeningName2) : "");
+						return i;
+					}
+					break;
+			}
+		}
+		Debug.LogFormat("[Double Listening #{0}] Using table row 4: \"Otherwise\".", moduleId);
 		return 3;
+
 	}
 
 	//Maps a String of listening characters to a String of binary.
