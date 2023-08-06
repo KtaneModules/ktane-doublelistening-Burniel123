@@ -4290,7 +4290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _seed: 1
+  _seed: 2
 --- !u!114 &114236368056677028
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4564,7 +4564,6 @@ MonoBehaviour:
   sound2: {fileID: 82619744994717704}
   sounds:
   - {fileID: 8300000, guid: 687d41c76b1b0344f9961eb098273639, type: 3}
-  - {fileID: 8300000, guid: dd5a2f765828c67489996cf0bc95abc2, type: 3}
   - {fileID: 8300000, guid: eecc4dcfa6592fd42906de1887fa691c, type: 3}
   - {fileID: 8300000, guid: 4ed8e935aab1b2948bb4cd2d7d575b96, type: 3}
   - {fileID: 8300000, guid: 8c7e38396d0f5cd40ab76279ff7737d2, type: 3}
@@ -4595,7 +4594,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6384e0bcbaeb06e46abed71ffd6d41c4, type: 3}
   - {fileID: 8300000, guid: be5a4abe21a7b264d9443d2b2ab5d9a9, type: 3}
   - {fileID: 8300000, guid: d0ee994e7acdba649a52f14a06b65949, type: 3}
-  - {fileID: 8300000, guid: 87d575a78bbba3644a38852c4d98bad2, type: 3}
   - {fileID: 8300000, guid: 631b06d4418a3e346aae2f41f3ad210f, type: 3}
   - {fileID: 8300000, guid: 9cb6440c233463c4c90a663101328294, type: 3}
   - {fileID: 8300000, guid: 8eb847717006c2b43bb9dadc58b100fa, type: 3}
@@ -4603,10 +4601,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 739c07f451a89c349bdbee33ad346ad9, type: 3}
   - {fileID: 8300000, guid: 899d3df43aa555045a5b21f8fbf28ea4, type: 3}
   - {fileID: 8300000, guid: bd34b7e3f4f69a84a9fb1ac7e7c0eba1, type: 3}
-  - {fileID: 8300000, guid: c29f6aa321b44904f8b0171199cdde84, type: 3}
   soundNames:
   - Arcade
-  - Ballpoint Pen Writing
   - Beach
   - Book Page Turning
   - Car Engine
@@ -4637,7 +4633,6 @@ MonoBehaviour:
   - Table Tennis
   - Tawny Owl
   - Taxi Dispatch
-  - Tearing Fabric
   - Throat Singing
   - Thrush Nightingale
   - Tibetan Nuns
@@ -4645,7 +4640,6 @@ MonoBehaviour:
   - Tuba
   - Vacuum Cleaner
   - Waterfall
-  - Zipper
 --- !u!114 &114496486483798896
 MonoBehaviour:
   m_ObjectHideFlags: 1

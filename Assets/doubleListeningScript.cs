@@ -26,13 +26,13 @@ public class doubleListeningScript : MonoBehaviour
 
 	//Module resources:
 	public AudioClip[] sounds;
-	public String[] soundNames = new String[] {"Arcade","Ballpoint Pen Writing","Beach","Book Page Turning","Car Engine","Casino","Censorship Bleep","Chainsaw","Compressed Air","Cow","Dialup Internet","Door Closing","Extractor Fan","Firework Exploding","Glass Shattering","Helicopter","Marimba","Medieval Weapons","Oboe","Phone Ringing","Police Radio Scanner",
-	"Rattling Iron Chain","Reloading Glock 19","Saxophone","Servo Motor","Sewing Machine","Soccer Match","Squeaky Toy","Supermarket","Table Tennis","Tawny Owl","Taxi Dispatch","Tearing Fabric","Throat Singing","Thrush Nightingale","Tibetan Nuns","Train Station","Tuba","Vacuum Cleaner","Waterfall","Zipper"};
+	public String[] soundNames = new String[] {"Arcade","Beach","Book Page Turning","Car Engine","Casino","Censorship Bleep","Chainsaw","Compressed Air","Cow","Dialup Internet","Door Closing","Extractor Fan","Firework Exploding","Glass Shattering","Helicopter","Marimba","Medieval Weapons","Oboe","Phone Ringing","Police Radio Scanner",
+	"Rattling Iron Chain","Reloading Glock 19","Saxophone","Servo Motor","Sewing Machine","Soccer Match","Squeaky Toy","Supermarket","Table Tennis","Tawny Owl","Taxi Dispatch","Throat Singing","Thrush Nightingale","Tibetan Nuns","Train Station","Tuba","Vacuum Cleaner","Waterfall"};
 	private Dictionary<String, String> listeningCodes = new Dictionary<String, String>()
 	{
 		{"Taxi Dispatch","&&&**"},{"Cow","&$#$&"},{"Extractor Fan","$#$*&"},{"Train Station","#$$**"},{"Arcade","$#$#*"},{"Casino","**$*#"},{"Supermarket","#$$&*"},{"Soccer Match","##*$*"},{"Tawny Owl","$#*$&"},{"Sewing Machine","#&&*#"},{"Thrush Nightingale","**#**"},{"Car Engine","&#**&"},{"Reloading Glock 19","$&**#"},{"Oboe","&#$$#"},
 		{"Saxophone","$&&**"},{"Tuba","#&$##"},{"Marimba","&*$*$"},{"Phone Ringing","&$$&*"},{"Tibetan Nuns","#&&&&"},{"Throat Singing","**$$$"},{"Beach","*&*&&"},{"Dialup Internet","*#&*&"},{"Police Radio Scanner","**###"},{"Censorship Bleep","&&$&*"},{"Medieval Weapons","&$**&"},{"Door Closing","#$#&$"},{"Chainsaw","&#&&#"},
-		{"Compressed Air","$$*$*"},{"Servo Motor","$&#$$"},{"Waterfall","&**$$"},{"Tearing Fabric","$&&*&"},{"Zipper","&$&##"},{"Vacuum Cleaner","#&$*&"},{"Ballpoint Pen Writing","$*$**"},{"Rattling Iron Chain","*#$&&"},{"Book Page Turning","###&$"},{"Table Tennis","*$$&$"},{"Squeaky Toy","$*&##"},{"Helicopter","#&$&&"},{"Firework Exploding","$&$$*"},{"Glass Shattering","*$*$*"}
+		{"Compressed Air","$$*$*"},{"Servo Motor","$&#$$"},{"Waterfall","&**$$"},{"Vacuum Cleaner","#&$*&"},{"Rattling Iron Chain","*#$&&"},{"Book Page Turning","###&$"},{"Table Tennis","*$$&$"},{"Squeaky Toy","$*&##"},{"Helicopter","#&$&&"},{"Firework Exploding","$&$$*"},{"Glass Shattering","*$*$*"}
 	};
 	//For rule seed:
 	String[] IndicatorNames = {"BOB", "CAR", "CLR", "FRK", "FRQ", "IND", "MSA", "NSA", "SIG", "SND", "TRN"};
@@ -102,10 +102,10 @@ public class doubleListeningScript : MonoBehaviour
 				if(i == 0)
 				{
 					int[] sounds = new int[2];
-					sounds[0] = rnd.Next(41);
+					sounds[0] = rnd.Next(soundNames.Length);
 					sounds[1] = -1;
 					while(sounds[1] == -1 || sounds[1] == sounds[0])
-						sounds[1] = rnd.Next(41);
+						sounds[1] = rnd.Next(soundNames.Length);
 					conditions[i] = new Condition{Type = condType, ConditionParam = parameter, Sounds = sounds};
 				}
 				else
@@ -116,7 +116,7 @@ public class doubleListeningScript : MonoBehaviour
 
 		}
 
-		soundPositions = Enumerable.Range(0, 41).ToList().Shuffle().Take(2).ToArray();
+		soundPositions = Enumerable.Range(0, soundNames.Length).ToList().Shuffle().Take(2).ToArray();
 		Debug.LogFormat("[Double Listening #{0}] The chosen sounds are \"{1}\" and \"{2}\".", moduleId, soundNames[soundPositions[0]], soundNames[soundPositions[1]]);
 		String listeningCode1 = listeningCodes[soundNames[soundPositions[0]]];
 		String listeningCode2 = listeningCodes[soundNames[soundPositions[1]]];
